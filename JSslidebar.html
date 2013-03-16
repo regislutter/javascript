@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+ 
+#bar{
+	margin-left:100px;
+	width:300px;
+	height:25px;
+	border:1px solid black;
+	position:relative;
+}
+ 
+#slider{
+	width:0%;
+	height:100%;
+	background-color:red;
+	top:0px;
+	left:0px;
+	position:absolute;
+	cursor:pointer;
+}
+ 
+#info{
+	width:200px;
+	height:25px;
+	border:1px solid black;	
+}
+ 
+</style>
+ 
+<script type="text/javascript">
+var bar, slider, mouseX, mouseY;
+ 
+function init(){
+	bar = document.getElementById('bar');
+	slider = document.getElementById('slider');
+	info = document.getElementById('info');
+	bar.addEventListener('mousedown', startSlide, false);	
+	window.addEventListener('mouseup', stopSlide, false);
+}
+
+function actualizeMouse(){
+	mouseX = window.event.clientX;
+	mouseY = window.event.clientY;
+}
+ 
+function startSlide(event){
+	var set_perc = ((((event.clientX - bar.offsetLeft) / bar.offsetWidth)).toFixed(2));
+	info.innerHTML = 'start' + set_perc + '%';	
+	window.addEventListener('mousemove', moveSlide, false);	
+	slider.style.width = (set_perc * 100) + '%';	
+}
+ 
+function moveSlide(event){
+	var set_perc = ((((mouseX - bar.offsetLeft) / bar.offsetWidth)).toFixed(2));
+	if(set_perc > 1){set_perc = 1;}else if(set_perc < 0){set_perc = 0;}
+	info.innerHTML = 'moving : ' + set_perc + '%';
+	slider.style.width = (set_perc * 100) + '%';
+}
+ 
+function stopSlide(event){
+	var set_perc = ((((event.clientX - bar.offsetLeft) / bar.offsetWidth)).toFixed(2));
+	if(set_perc > 1){set_perc = 1;}else if(set_perc < 0){set_perc = 0;}
+	info.innerHTML = 'done : ' + set_perc + '%';
+	window.removeEventListener('mousemove', moveSlide, false);
+	slider.style.width = (set_perc * 100) + '%';
+}
+ 
+</script>
+ 
+</head>
+<body onmousemove="actualizeMouse()" onload='init()'>
+ 
+<div id='bar'>
+<div id='slider'>
+ 
+</div>
+</div>
+<br />
+ 
+<div id='info'>info</div>
+ 
+</body>
+</html>

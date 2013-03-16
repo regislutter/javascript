@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+ 
+body{padding:0; margin:0; overflow:hidden;
+     background:#598585;
+     background:-moz-radial-gradient(center, ellipse cover,  #598585 0%, #00445f 99%);
+     background:-webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,#598585), color-stop(99%,#00445f));
+     background:-webkit-radial-gradient(center, ellipse cover,  #598585 0%,#00445f 99%);
+     background:-o-radial-gradient(center, ellipse cover,  #598585 0%,#00445f 99%);
+     background:-ms-radial-gradient(center, ellipse cover,  #598585 0%,#00445f 99%);
+     background:radial-gradient(ellipse at center,  #598585 0%,#00445f 99%);
+  }
+  body,html{width:100%; height:100%;}
+
+  /* Upload button */
+  .upload{
+     position:absolute; top:50%; left:50%; margin:-35px 0 0 -35px;
+     display:block; width:71px; height:71px;
+     background:url(http://img822.imageshack.us/img822/4770/uploadprogress.png) 0 0 no-repeat;
+    
+  }
+  #progress{
+     display:block; position:absolute; top:-15px; left:-15px;
+  }
+  .button{
+     display:block; width:38px; height:30px; margin:16px 0 0 15px;
+     background:url(http://img822.imageshack.us/img822/4770/uploadprogress.png) -70px 0;
+  }
+  .finished .button{
+     opacity:1;
+     background-position:-70px -29px;
+  }
+ 
+</style>
+ 
+<script type="text/javascript">
+
+/*
+    Code adaptation of http://jsfiddle.net/oskar/Aapn8/ for jQuery
+    by @Flayks (http://flayks.com)
+
+    Have fun :)
+
+    Based on:
+    http://dribbble.com/shots/870785-Upload-Button-PSD
+    http://dribbble.com/shots/871352-Upload-Button-rebound-PSD
+    
+*/
+
+(function($){
+
+   // Canvas
+   var bg = document.getElementById("progress"),
+       ctx = bg.getContext("2d"),
+       imd = null,
+       circ = Math.PI * 2,
+       quart = Math.PI / 2;
+
+   ctx.beginPath();
+   ctx.strokeStyle = "#fff";
+   ctx.shadowOffsetX = 0;
+   ctx.shadowOffsetY = 0;
+   ctx.shadowBlur = 10;
+   ctx.shadowColor = "#00dad8";
+   ctx.closePath();
+   ctx.fill();
+   ctx.lineWidth = 4;
+
+   imd = ctx.getImageData(0, 0, 100, 100);
+
+   function draw(current){
+      ctx.putImageData(imd, 0, 0);
+      ctx.beginPath();
+      ctx.arc(50, 50, 35, -(quart), ((circ) * current) - quart, false);
+      ctx.stroke();
+
+      var load = setInterval(function(){
+         current += 0.01;
+         draw(current);
+         clearInterval(load);
+      }, 25);
+
+      if (current >= 1){
+         clearInterval(load);
+
+         $("#progress").fadeOut(200);
+         $(".button").fadeOut(200, function(){
+            $(this).parent().addClass("finished");
+            $(this).fadeTo(200, 1);
+         })
+      }
+   }
+
+
+   // Upload click
+   $(".upload")
+      .on("click", function(e){
+         draw(0);
+         e.preventDefault();
+      })
+      .mousedown(function(){
+         $(this).find(".button").fadeTo(200, 0.3);
+      });
+
+})(jQuery);
+ 
+</script>
+ 
+</head>
+<body>
+ 
+<a href="#" class="upload">
+   <span class="button"></span>
+   <canvas id="progress" width="100" height="100"></canvas>
+</a>
+ 
+</body>
+</html>
